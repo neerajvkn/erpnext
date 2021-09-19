@@ -681,11 +681,15 @@ erpnext.taxes_and_totals = erpnext.payments.extend({
 		if (existing_amount != total_amount_to_pay) {
 			frappe.db.get_value('Sales Invoice Payment', {'parent': this.frm.doc.pos_profile, 'default': 1},
 				['mode_of_payment', 'account', 'type'], (value) => {
+					// var actual_mop = frappe.db.get_value('Sales Invoice Payment',{'parent': this.frm.doc.return_against},['mode_of_payment'])
+					// console.log(actual_mop)
+					
 					if (this.frm.is_dirty()) {
+						return
 						frappe.model.clear_table(this.frm.doc, 'payments');
 						if (value) {
 							let row = frappe.model.add_child(this.frm.doc, 'Sales Invoice Payment', 'payments');
-							row.mode_of_payment = value.mode_of_payment;
+							row.mode_of_payment = actual_mop.mode_of_payment;
 							row.type = value.type;
 							row.account = value.account;
 							row.default = 1;

@@ -625,12 +625,17 @@ class calculate_taxes_and_totals(object):
 			default_mode_of_payment = frappe.db.get_value('Sales Invoice Payment',
 				{'parent': self.doc.pos_profile, 'default': 1},
 				['mode_of_payment', 'type', 'account'], as_dict=1)
+			actual_mode_of_payment = frappe.db.get_value('Sales Invoice Payment',
+				{'parent': self.doc.return_against, 'default': 1},
+				['mode_of_payment', 'type', 'account'], as_dict=1)
 
 			self.doc.payments = []
-
 			if default_mode_of_payment:
+				
+				# if existing_amount != self.doc.payments[0].amount:
+				# 	return
 				self.doc.append('payments', {
-					'mode_of_payment': default_mode_of_payment.mode_of_payment,
+					'mode_of_payment': actual_mode_of_payment.mode_of_payment,
 					'type': default_mode_of_payment.type,
 					'account': default_mode_of_payment.account,
 					'amount': total_amount_to_pay
